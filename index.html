@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Twitter - Tweets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8fa;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1DA1F2;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    /* Auth Box */
+    #auth {
+      max-width: 400px;
+      margin: 40px auto;
+      background: #fff;
+      border: 1px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    #auth input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #e1e8ed;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    #auth button {
+      background: #1DA1F2;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #auth button:hover {
+      background: #0d8ddb;
+    }
+    /* Tweet Box + Feed */
+    #new-tweet {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      border: 1px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    #new-tweet textarea {
+      width: 100%;
+      border: none;
+      resize: none;
+      font-size: 15px;
+      padding: 10px;
+      outline: none;
+      min-height: 60px;
+      border-radius: 8px;
+      background: #f5f8fa;
+    }
+    .tweet-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .upload-btn {
+      background: none;
+      color: #1DA1F2;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #1DA1F2;
+      transition: 0.2s;
+    }
+    .upload-btn:hover {
+      background: #e8f5fe;
+    }
+    #new-tweet button {
+      background: #1DA1F2;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    #new-tweet button:hover {
+      background: #0d8ddb;
+    }
+    #tweets {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    .tweet {
+      background: #fff;
+      border: 1px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tweet-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ccc;
+      margin-right: 10px;
+    }
+    .username {
+      font-weight: bold;
+      color: #14171a;
+    }
+    .tweet-content {
+      font-size: 15px;
+      color: #14171a;
+      margin: 10px 0;
+    }
+    .tweet img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .actions {
+      margin-top: 10px;
+    }
+    .actions button {
+      background: none;
+      border: none;
+      color: #1DA1F2;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .actions button:hover {
+      text-decoration: underline;
+    }
+    .counts {
+      font-size: 13px;
+      color: #657786;
+      margin-top: 5px;
+    }
+    .comment-box {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    .comment-box input {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid #e1e8ed;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+    .comment-box button {
+      background: #1DA1F2;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .comment-box button:hover {
+      background: #0d8ddb;
+    }
+    .comments {
+      margin-top: 10px;
+      border-left: 2px solid #e1e8ed;
+      padding-left: 10px;
+    }
+    .comments p {
+      font-size: 14px;
+      margin: 5px 0;
+      color: #14171a;
+    }
+  </style>
+</head>
+<body>
+  <header>MiniTwitter</header>
+
+  <!-- Auth Section -->
+  <div id="auth">
+    <h2>Login / Register</h2>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <br>
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- App Section -->
+  <div id="app" style="display:none;">
+    <div id="new-tweet">
+      <textarea id="tweet-content" placeholder="What's happening?"></textarea>
+      <div class="tweet-actions">
+        <label for="tweet-image" class="upload-btn">📷 Add Image</label>
+        <input type="file" id="tweet-image" accept="image/*" style="display: none;">
+        <button onclick="postTweet()">Tweet</button>
+      </div>
+    </div>
+    <div id="tweets"></div>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000/api";
+
+    function getToken() { return localStorage.getItem("token"); }
+    function setToken(token) { localStorage.setItem("token", token); }
+    function clearToken() { localStorage.removeItem("token"); }
+
+    function showLogin() {
+      document.getElementById("auth").style.display = "block";
+      document.getElementById("app").style.display = "none";
+    }
+    function showApp() {
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("app").style.display = "block";
+    }
+
+    // Register
+  function register() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  fetch("http://127.0.0.1:8000/api/accounts/auth/register/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(async res => {
+    const text = await res.text(); // get raw text first
+    try {
+      const data = JSON.parse(text); // try JSON
+      if (data.username) {
+        alert("Registration successful! Please login.");
+      } else {
+        alert("Registration failed: " + JSON.stringify(data));
+      }
+    } catch (e) {
+      alert("Server did not return JSON. Response was:\n" + text);
+    }
+  })
+  .catch(err => {
+    alert("Error: " + err);
+  });
+}
+
+
+
+    // Login
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      fetch("http://127.0.0.1:8000/api/token/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.access) {
+          setToken(data.access);
+          showApp();
+          loadTweets();
+        } else {
+          alert("Login failed!");
+        }
+      });
+    }
+
+    // Load tweets
+    function loadTweets() {
+      fetch(`${API_BASE}/tweets/tweets/`, {
+        headers: { "Authorization": "Bearer " + getToken() }
+      })
+      .then(res => {
+        if (res.status === 401) { // token expired
+          clearToken();
+          showLogin();
+          throw new Error("Unauthorized");
+        }
+        return res.json();
+      })
+      .then(data => {
+        const tweets = Array.isArray(data) ? data : data.results || [];
+        const tweetsDiv = document.getElementById("tweets");
+        tweetsDiv.innerHTML = "";
+        tweets.forEach(tweet => {
+          const tweetContainer = document.createElement("div");
+          tweetContainer.classList.add("tweet");
+          tweetContainer.innerHTML = `
+            <div class="tweet-header">
+              <div class="avatar"></div>
+              <span class="username">${tweet.user?.username || "Anonymous"}</span>
+            </div>
+            <div class="tweet-content">${tweet.content}</div>
+            ${tweet.image ? `<img src="${tweet.image}">` : ""}
+            <div class="actions">
+              <button onclick="likeTweet(${tweet.id})">❤️ Like</button>
+              <button onclick="toggleComments(${tweet.id})">💬 Comments</button>
+            </div>
+            <div class="counts">
+              Likes: <span id="likes-${tweet.id}">${tweet.likes_count || 0}</span> · 
+              Comments: <span id="comments-count-${tweet.id}">${tweet.comments_count || 0}</span>
+            </div>
+            <div class="comment-box">
+              <input type="text" id="comment-input-${tweet.id}" placeholder="Write a comment...">
+              <button onclick="addComment(${tweet.id})">Send</button>
+            </div>
+            <div id="comments-${tweet.id}" class="comments" style="display: none;"></div>
+          `;
+          tweetsDiv.appendChild(tweetContainer);
+        });
+      });
+    }
+
+    // Post a tweet
+    function postTweet() {
+      const content = document.getElementById("tweet-content").value.trim();
+      const imageInput = document.getElementById("tweet-image");
+      if (!content && !imageInput.files.length) {
+        alert("Tweet cannot be empty!");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("content", content);
+      if (imageInput.files.length > 0) {
+        formData.append("image", imageInput.files[0]);
+      }
+      fetch(`${API_BASE}/tweets/tweets/`, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + getToken() },
+        body: formData
+      })
+      .then(res => {
+        if (res.status === 401) { clearToken(); showLogin(); throw new Error("Unauthorized"); }
+        return res.json();
+      })
+      .then(() => {
+        document.getElementById("tweet-content").value = "";
+        imageInput.value = "";
+        loadTweets();
+      });
+    }
+
+    // Like a tweet
+    function likeTweet(tweetId) {
+      fetch(`${API_BASE}/tweets/${tweetId}/like/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + getToken()
+        }
+      })
+      .then(res => {
+        if (res.status === 401) { clearToken(); showLogin(); throw new Error("Unauthorized"); }
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById(`likes-${tweetId}`).innerText = data.likes_count;
+      });
+    }
+
+    // Comments
+    function toggleComments(tweetId) {
+      const div = document.getElementById(`comments-${tweetId}`);
+      const isVisible = div.style.display === "block";
+      div.style.display = isVisible ? "none" : "block";
+      if (!isVisible) loadComments(tweetId);
+    }
+    function loadComments(tweetId) {
+      fetch(`${API_BASE}/tweets/tweets/${tweetId}/comments/`, {
+        headers: { "Authorization": "Bearer " + getToken() }
+      })
+      .then(res => {
+        if (res.status === 401) { clearToken(); showLogin(); throw new Error("Unauthorized"); }
+        return res.json();
+      })
+      .then(data => {
+        const comments = Array.isArray(data) ? data : data.results || [];
+        const div = document.getElementById(`comments-${tweetId}`);
+        div.innerHTML = "";
+        comments.forEach(comment => {
+          const p = document.createElement("p");
+          const username = comment.user?.username || comment.user || "Anonymous";
+          p.textContent = `${username}: ${comment.content}`;
+          div.appendChild(p);
+        });
+        document.getElementById(`comments-count-${tweetId}`).innerText = comments.length;
+      });
+    }
+    function addComment(tweetId) {
+      const input = document.getElementById(`comment-input-${tweetId}`);
+      const content = input.value.trim();
+      if (!content) return;
+      fetch(`${API_BASE}/tweets/comments/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + getToken()
+        },
+        body: JSON.stringify({ content: content, tweet_id: tweetId })
+      })
+      .then(res => {
+        if (res.status === 401) { clearToken(); showLogin(); throw new Error("Unauthorized"); }
+        return res.json();
+      })
+      .then(() => {
+        input.value = "";
+        loadComments(tweetId);
+      });
+    }
+
+    // On page load
+    if (getToken()) { showApp(); loadTweets(); }
+    else { showLogin(); }
+  </script>
+</body>
+</html>
